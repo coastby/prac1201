@@ -10,11 +10,11 @@ public class UserRequest {
     private String uId;
     private String password;
     private String name;
-    public User toEntity(){
+    public User toEntity(String password){
         return User.builder()
                 .uId(this.uId)
                 .name(this.name)
-                .password(this.password)
+                .password(password)
                 .build();
     }
 }
