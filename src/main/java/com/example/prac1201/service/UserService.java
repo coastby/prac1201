@@ -19,8 +19,8 @@ public class UserService {
         userRepository.findByUId(userRequest.getUId())
                 .ifPresent(user -> {throw new RuntimeException("같은 아이디가 있습니다.");});
         User savedUser = userRepository.save(userRequest.toEntity());
-        log.info(userRequest.getUId());
         //DB에 넣을 때 비밀번호 암호화 하기
+
         return new UserResponse(savedUser.getUId(), savedUser.getName());
     }
 }

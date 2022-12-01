@@ -18,7 +18,6 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserResponse> join(@RequestBody UserRequest userRequest){
-        log.info(userRequest.getUId());
         UserResponse userResponse = userService.join(userRequest);
         return ResponseEntity.ok().body(userResponse);
     }
