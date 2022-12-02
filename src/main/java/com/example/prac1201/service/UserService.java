@@ -1,7 +1,8 @@
 package com.example.prac1201.service;
 
-import com.example.prac1201.configuration.EncrypterConfig;
 import com.example.prac1201.domain.User;
+import com.example.prac1201.dto.UserLoginRequest;
+import com.example.prac1201.dto.UserLoginResponse;
 import com.example.prac1201.dto.UserRequest;
 import com.example.prac1201.dto.UserResponse;
 import com.example.prac1201.exception.ErrorCode;
@@ -27,5 +28,12 @@ public class UserService {
         User savedUser = userRepository.save(userRequest.toEntity(encoder.encode(userRequest.getPassword())));
 
         return new UserResponse(savedUser.getUId(), savedUser.getName());
+    }
+
+    public UserLoginResponse login(UserLoginRequest userLoginReauest) {
+        return UserLoginResponse.builder()
+                .uId()
+                .token()
+                .build();
     }
 }

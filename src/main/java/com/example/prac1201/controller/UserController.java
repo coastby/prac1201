@@ -1,5 +1,7 @@
 package com.example.prac1201.controller;
 
+import com.example.prac1201.dto.UserLoginRequest;
+import com.example.prac1201.dto.UserLoginResponse;
 import com.example.prac1201.dto.UserRequest;
 import com.example.prac1201.dto.UserResponse;
 import com.example.prac1201.service.UserService;
@@ -20,5 +22,10 @@ public class UserController {
     public ResponseEntity<UserResponse> join(@RequestBody UserRequest userRequest){
         UserResponse userResponse = userService.join(userRequest);
         return ResponseEntity.ok().body(userResponse);
+    }
+    @PostMapping(value = "/login")
+    public ResponseEntity<UserLoginResponse> login(@RequestBody UserLoginRequest userLoginRequest){
+        UserLoginResponse userLoginResponse = userService.login(userLoginRequest);
+        return ResponseEntity.ok().body(userLoginResponse);
     }
 }
