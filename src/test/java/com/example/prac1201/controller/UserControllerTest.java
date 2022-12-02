@@ -1,8 +1,11 @@
 package com.example.prac1201.controller;
 
 import com.example.prac1201.dto.UserLoginRequest;
+import com.example.prac1201.dto.UserLoginResponse;
 import com.example.prac1201.dto.UserRequest;
 import com.example.prac1201.dto.UserResponse;
+import com.example.prac1201.exception.ErrorCode;
+import com.example.prac1201.exception.UserException;
 import com.example.prac1201.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -76,7 +79,7 @@ class UserControllerTest {
     @Test
     @DisplayName("로그인 실패 - id 없음")
     void login_fail_id() throws Exception {
-        given(userService.login(any())).willReturn(any());
+        given(userService.login(any())).willThrow(new UserException(ErrorCode.NO_SUCH_ID));
 
         //when
         mockMvc.perform(
@@ -85,7 +88,22 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(userLoginRequest))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.token").exists())
+                .andExpect(jsonPath("$").value("아이디를 확인해주세요."))
+                .andDo(print());
+    }
+    @Test
+    @DisplayName("로그인 실패 - 비밀 번호 틀림")
+    void login_fail_pw() throws Exception {
+        given(userService.login(any())).willThrow(new UserException(ErrorCode.NO_SUCH_ID));
+
+        //when
+        mockMvc.perform(
+                post("/api/v1/users/login")
+                        .with(csrf())
+                        .content(objectMapper.writeValueAsString(userLoginRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$").value("비밀번호가 틀렸습니다."))
                 .andDo(print());
     }
 }

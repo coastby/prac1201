@@ -30,10 +30,18 @@ public class UserService {
         return new UserResponse(savedUser.getUId(), savedUser.getName());
     }
 
-    public UserLoginResponse login(UserLoginRequest userLoginReauest) {
+    public UserLoginResponse login(UserLoginRequest userLoginRequest) {
+        //아이디가 없을 때 예외 발생
+        User user = userRepository.findByUId(userLoginRequest.getUId())
+                .orElseThrow(() -> new UserException(ErrorCode.NO_SUCH_ID));
+        //비밀번호가 틀렸을 때 예외 발생
+        if(!encoder.matches(userLoginRequest.getPassword(), user.getPassword())){
+            throw new UserException(ErrorCode.INCORRECT_PASSWORD);
+        }
+        //로그인 성공 시 토큰 발행
         return UserLoginResponse.builder()
-                .uId()
-                .token()
+//                .uId()
+//                .token()
                 .build();
     }
 }
