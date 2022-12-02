@@ -8,17 +8,29 @@ import com.example.prac1201.dto.UserResponse;
 import com.example.prac1201.exception.ErrorCode;
 import com.example.prac1201.exception.UserException;
 import com.example.prac1201.repository.UserRepository;
+import com.example.prac1201.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder encoder;
+    private final JwtUtil jwtUtil;
+
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder encoder, JwtUtil jwtUtil) {
+        this.userRepository = userRepository;
+        this.encoder = encoder;
+        this.jwtUtil = jwtUtil;
+    }
+
+    @Value("${jwt.token.secret}")
+    private String key;
+    private long expiredTime = 60 * 60 * 1000; //1시간
 
     public UserResponse join(UserRequest userRequest) {
         //같은 유저가 있으면 예외발생
@@ -39,9 +51,11 @@ public class UserService {
             throw new UserException(ErrorCode.INCORRECT_PASSWORD);
         }
         //로그인 성공 시 토큰 발행
+        String token = jwtUtil.createToken(user.getUId(), key, expiredTime);
+
         return UserLoginResponse.builder()
-//                .uId()
-//                .token()
+                .uId(user.getUId())
+                .token(token)
                 .build();
     }
 }
