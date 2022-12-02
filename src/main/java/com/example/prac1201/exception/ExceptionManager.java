@@ -12,4 +12,9 @@ public class ExceptionManager {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(e.getMessage());
     }
+    @ExceptionHandler(UserException.class)
+    public ResponseEntity<?> userExceptionHandler(UserException e){
+        return ResponseEntity.status(e.errorCode.getHttpStatus())
+                .body(e.errorCode.getMessage());
+    }
 }
